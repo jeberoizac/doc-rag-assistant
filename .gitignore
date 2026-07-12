@@ -5,4 +5,3 @@ temp_*
 .env
 .streamlit/secrets.toml
 .test_gemini.py
-.readme.md
