@@ -79,3 +79,52 @@ if uploaded_file is not None:
         MessagesPlaceholder(variable_name="chat_history"""),
         ("human", "{input}")
     ])
+
+# Construcción limpia de la cadena LCEL
+    rag_chain = (
+        {
+            "context": (lambda x: x["input"]) | retriever | format_docs, 
+            "input": lambda x: x["input"],
+            "chat_history": lambda x: x["chat_history"]
+        }
+        | prompt
+        | llm
+        | StrOutputParser()
+    )
+
+    # --- INTERFAZ VISUAL DEL CHAT ---
+    # Renderizar el historial acumulado en pantalla
+    for message in st.session_state.chat_history:
+        if isinstance(message, HumanMessage):
+            with st.chat_message("user"):
+                st.write(message.content)
+        elif isinstance(message, AIMessage):
+            with st.chat_message("assistant"):
+                st.write(message.content)
+
+    # Capturar la nueva interacción del usuario
+    if user_query := st.chat_input("¿Qué deseas preguntar sobre el documento?"):
+        with st.chat_message("user"):
+            st.write(user_query)
+        
+        with st.spinner("Pensando..."):
+            try:
+                # Invocación estructurada pasando el diccionario con las llaves que espera la cadena
+                response_text = rag_chain.invoke({
+                    "input": user_query,
+                    "chat_history": st.session_state.chat_history
+                })
+            except Exception as e:
+                st.error(f"Error al procesar la cadena: {e}")
+                response_text = "Lo siento, ocurrió un error interno al procesar tu consulta."
+        
+        with st.chat_message("assistant"):
+            st.write(response_text)
+            
+        # Guardar la interacción en el estado de la sesión
+        st.session_state.chat_history.extend([
+            HumanMessage(content=user_query),
+            AIMessage(content=response_text)
+        ])
+else:
+    st.info("Por favor, sube un archivo PDF o Word para comenzar a chatear con el agente.")
