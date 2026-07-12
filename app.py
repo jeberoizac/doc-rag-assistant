@@ -43,3 +43,39 @@ def procesar_documento(file_bytes, file_name):
     # Fragmentación del texto
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     splits = text_splitter.split_documents(docs)
+
+
+ # Crear Base de Datos Vectorial (Local con FAISS)
+    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2", model_kwargs={"device": "cpu"})
+    vectorstore = FAISS.from_documents(splits, embeddings)
+    return vectorstore.as_retriever(search_kwargs={"k": 3})
+
+uploaded_file = st.file_uploader("Sube tu PDF o Word", type=["pdf", "docx"])
+
+if uploaded_file is not None:
+    # Carga optimizada usando caché de Streamlit
+    with st.spinner("Procesando el documento de manera óptima..."):
+        retriever = procesar_documento(uploaded_file.getvalue(), uploaded_file.name)
+
+    # Configurar Google Generative AI (Ideal para OCI y compatible con roles estándar)
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash",
+        google_api_key=os.environ["GEMINI_API_KEY"],
+        temperature=0.3
+    )
+
+    # Función auxiliar para unir los fragmentos de texto recuperados
+    def format_docs(docs):
+        return "\n\n".join(doc.page_content for doc in docs)
+
+    # Prompt del sistema estructurado de forma estándar
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", 
+         """Eres un asistente experto. Usa los siguientes fragmentos de contexto recuperados del documento 
+         para responder la pregunta del usuario. Si no sabes la respuesta o no está en el texto, di amablemente que no encuentras esa información.
+         No inventes datos.\n\n
+         
+         Contexto:\n{context}"),
+        MessagesPlaceholder(variable_name="chat_history"""),
+        ("human", "{input}")
+    ])
