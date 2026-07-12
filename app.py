@@ -21,3 +21,25 @@ elif "GEMINI_API_KEY" not in os.environ:
 st.set_page_config(page_title="Agente RAG Alura", page_icon="🤖")
 st.title("🤖 Mi Agente Lector de Documentos")
 
+# Inicializar el historial de chat en la memoria de Streamlit si no existe
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+# Función para procesar el documento UNA sola vez por archivo
+@st.cache_resource(show_spinner=False)
+def procesar_documento(file_bytes, file_name):
+    temp_file_path = f"temp_{file_name}"
+    with open(temp_file_path, "wb") as f:
+        f.write(file_bytes)
+    
+    if file_name.endswith(".pdf"):
+        loader = PyPDFLoader(temp_file_path)
+    else:
+        loader = Docx2txtLoader(temp_file_path)
+    docs = loader.load()
+    
+    os.remove(temp_file_path)
+    
+    # Fragmentación del texto
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    splits = text_splitter.split_documents(docs)
