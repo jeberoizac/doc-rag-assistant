@@ -4,4 +4,5 @@ __pycache__/
 temp_*
 .env
 .streamlit/secrets.toml
-.test_gemini.py
+test_gemini.py
+Challenge_Alura.code-workspace

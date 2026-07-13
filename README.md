@@ -135,6 +135,22 @@ streamlit run app.py
 
 ---
 
+## Capturas
+
+### Aplicación
+
+![Aplicación](images/app.png)
+
+### Consulta al documento
+
+![Consulta](images/pregunta1.png)
+
+### Despliegue en OCI
+
+####[OCI](images/deploy_oci.png)
+
+---
+
 # Posibles mejoras
 
 - Soporte para archivos CSV.
