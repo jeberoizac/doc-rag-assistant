@@ -145,9 +145,9 @@ streamlit run app.py
 
 ![Consulta](images/pregunta1.png)
 
-### Despliegue en OCI
+### Despliegue en Streamlit
 
-####[OCI](images/deploy_oci.png)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://doc-rag-assistant-jeberoizac.streamlit.app/)
 
 ---
 

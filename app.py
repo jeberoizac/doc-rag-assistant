@@ -18,8 +18,16 @@ elif "GEMINI_API_KEY" not in os.environ:
     st.error("Falta la API Key de Gemini. Por favor, configúrala en tus variables de entorno o st.secrets.")
     st.stop()
 
-st.set_page_config(page_title="Agente RAG Alura", page_icon="🤖")
-st.title("🤖 Mi Agente Lector de Documentos")
+st.set_page_config(
+    page_title="Doc RAG Assistant",
+    page_icon="📄"
+)
+
+st.title("🤖 Doc RAG Assistant")
+
+st.caption(
+    "Obtén respuestas basadas en el contenido de tus documentos utilizando inteligencia artificial."
+)
 
 # Inicializar el historial de chat en la memoria de Streamlit si no existe
 if "chat_history" not in st.session_state:
@@ -50,7 +58,11 @@ def procesar_documento(file_bytes, file_name):
     vectorstore = FAISS.from_documents(splits, embeddings)
     return vectorstore.as_retriever(search_kwargs={"k": 3})
 
-uploaded_file = st.file_uploader("Sube tu PDF o Word", type=["pdf", "docx"])
+uploaded_file = st.file_uploader(
+    "📄 Selecciona un documento",
+    type=["pdf", "docx"],
+    help="Formatos compatibles: PDF y Word (.docx)"
+)
 
 if uploaded_file is not None:
     # Carga optimizada usando caché de Streamlit
