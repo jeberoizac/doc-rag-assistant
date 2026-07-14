@@ -1,4 +1,4 @@
-# 🤖 Doc RAG Assistant
+# 📄 Doc RAG Assistant
 
 Proyecto desarrollado como parte del Challenge de Alura Latam y Oracle Next Education (ONE).
 
@@ -10,7 +10,7 @@ El usuario carga un documento, realiza una pregunta y el sistema busca la inform
 
 # Tecnologías utilizadas
 
-- Python 3.14
+- Python 3
 - Streamlit
 - LangChain
 - Google Gemini
@@ -18,6 +18,19 @@ El usuario carga un documento, realiza una pregunta y el sistema busca la inform
 - FAISS
 - PyPDF
 - Docx2txt
+
+---
+
+## Arquitectura
+
+El proyecto utiliza una arquitectura RAG (Retrieval-Augmented Generation) compuesta por las siguientes etapas:
+
+- Carga del documento.
+- Fragmentación del texto.
+- Generación de embeddings con Hugging Face.
+- Almacenamiento de vectores en FAISS.
+- Recuperación de los fragmentos más relevantes.
+- Generación de la respuesta utilizando Gemini.
 
 ---
 
@@ -42,13 +55,13 @@ De esta forma el modelo responde utilizando la información del documento y dism
 Clonar el repositorio
 
 ```bash
-git clone https://github.com/TU_USUARIO/TU_REPOSITORIO.git
+git clone https://github.com/jeberoizac/doc-rag-assistant.git
 ```
 
 Entrar al proyecto
 
 ```bash
-cd TU_REPOSITORIO
+cd doc-rag-assistant
 ```
 
 Crear un entorno virtual
@@ -158,9 +171,13 @@ streamlit run app.py
 - Historial de conversaciones permanente.
 - Soporte para múltiples documentos.
 - Despliegue mediante Docker.
+- Mostrar las fuentes o páginas utilizadas para generar cada respuesta.
 
 ---
 
-# Autor
+## Autor
 
-Proyecto desarrollado por **Jurgen Beroiza** para el Challenge de Alura Latam y Oracle Next Education.
+Jurgen Beroiza
+
+GitHub:
+https://github.com/jeberoizac
